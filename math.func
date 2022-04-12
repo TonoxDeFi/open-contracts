@@ -1,0 +1,72 @@
+{-
+    math.func   
+
+    Extends FunC's arithmetic operations.
+-}
+
+(int) Math::sqrt(int x) inline {
+    int z = (x + 1) / 2;
+    int y = x;
+    while (z < y) {
+        y = z;
+        z = (x / z + z) / 2;
+    }
+    return y;
+}
+
+(int) Math::min(int a, int b) inline {
+    return a < b ? a : b;
+}
+
+(int) Math::max(int a, int b) inline {
+    return a >= b ? a : b;
+}
+
+(int) Math::abs(int x) inline {
+    return x >= 0 ? x : (x * -1);
+}
+
+(int) Math::avg(int a, int b) inline {
+    return (a + b) / 2;
+}
+
+(int) Math::exp(int a) inline {
+    return (a >= 0 ? 1 << a : 1 >> (a * -1));
+}
+
+(int) Math::log2(int x) inline {
+  int n = 0;
+  if (x >= 128.Math::exp()) { 
+    x >>= 128; 
+    n += 128; 
+  }
+  if (x >= 64.Math::exp()) { 
+    x >>= 64;
+    n += 64; 
+  }
+  if (x >= 32.Math::exp()) {
+    x >>= 32; 
+    n += 32; 
+  }
+  if (x >= 16.Math::exp()) { 
+    x >>= 16; 
+    n += 16; 
+  }
+  if (x >= 8.Math::exp()) { 
+    x >>= 8; 
+    n += 8; 
+  }
+  if (x >= 4.Math::exp()) { 
+    x >>= 4; 
+    n += 4; 
+  }
+  if (x >= 2.Math::exp()) { 
+    x >>= 2; 
+    n += 2; 
+  }
+  if (x >= 1.Math::exp()) { 
+    ;; x >>= 1; 
+    n += 1; 
+  }
+  return n;
+}
