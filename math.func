@@ -5,13 +5,21 @@
 -}
 
 (int) Math::sqrt(int x) inline {
-    int z = (x + 1) / 2;
-    int y = x;
-    while (z < y) {
-        y = z;
-        z = (x / z + z) / 2;
+  if (x == 0){
+    return 0;
+  } else {
+    if (x <= 3) {
+      return 1;
+    } else {
+      int z = (x + 1) / 2;
+      int y = x;
+      while (z < y) {
+          y = z;
+          z = (x / z + z) / 2;
+      }
+      return y;
     }
-    return y;
+  }
 }
 
 (int) Math::min(int a, int b) inline {
