@@ -15,6 +15,7 @@
 
 ## Functions
 - `(int) sqrt(int x)`
-- `(int) avg(int a, int b)`
-- `(int) exp(int a)`
+- `(int) avg(int x, int y)`
+- `(int) exp(int x)`
 - `(int) log2(int x)` 
+- `(int) mod (int x, int y)`

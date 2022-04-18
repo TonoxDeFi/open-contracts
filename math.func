@@ -22,12 +22,12 @@
   }
 }
 
-(int) avg(int a, int b) inline {
-    return (a + b) / 2;
+(int) avg(int x, int y) inline {
+    return (x + y) / 2;
 }
 
-(int) exp(int a) inline {
-    return (a >= 0 ? 1 << a : 1 >> (a * -1));
+(int) exp(int x) inline {
+    return (x >= 0 ? 1 << x : 1 >> (x * -1));
 }
 
 (int) log2(int x) inline {
@@ -66,3 +66,5 @@
   }
   return n;
 }
+
+(int) mod (int x, int y) asm "MOD";
