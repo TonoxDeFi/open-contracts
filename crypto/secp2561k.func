@@ -7,11 +7,11 @@
 -}
 
 ;; private
-int _::addmod(int a, int b, int c) inline { return (a + b) % c; }
+int _::secp2561k::addmod(int a, int b, int c) inline { return (a + b) % c; }
 ;; private
-int _::mulmod(int a, int b, int c) inline { return (a * b) % c; }
+int _::secp2561k::mulmod(int a, int b, int c) inline { return (a * b) % c; }
 ;; private
-(int) _::pow(int n, int e) {
+(int) _::secp2561k::pow(int n, int e) {
     if (e == 0) {
         return 1;
     }
@@ -20,7 +20,7 @@ int _::mulmod(int a, int b, int c) inline { return (a * b) % c; }
         return n;
     }
 
-    int p = _::pow(n, (e / 2));
+    int p = _::secp2561k::pow(n, (e / 2));
     p = p * p;
     
     if ((e % 2) == 1) {
@@ -35,37 +35,37 @@ const secp256k1::a = 0;
 
 (int, int) secp256k1::_jadd(int x1, int z1, int x2, int z2) inline_ref {
     return (
-        _::addmod(
-            _::mulmod(z2, x1, secp256k1::n),
-            _::mulmod(x2, z1, secp256k1::n),
+        _::secp2561k::addmod(
+            _::secp2561k::mulmod(z2, x1, secp256k1::n),
+            _::secp2561k::mulmod(x2, z1, secp256k1::n),
             secp256k1::n
         ),
-        _::mulmod(z1, z2, secp256k1::n)
+        _::secp2561k::mulmod(z1, z2, secp256k1::n)
     );
 }
 
 (int, int) secp256k1::_jsub(int x1, int z1, int x2, int z2) inline_ref {
     return (
-        _::addmod(
-            _::mulmod(z2, x1, secp256k1::n),
-            _::mulmod(secp256k1::n - x2, z1, secp256k1::n),
+        _::secp2561k::addmod(
+            _::secp2561k::mulmod(z2, x1, secp256k1::n),
+            _::secp2561k::mulmod(secp256k1::n - x2, z1, secp256k1::n),
             secp256k1::n
         ),
-        _::mulmod(z1, z2, secp256k1::n)
+        _::secp2561k::mulmod(z1, z2, secp256k1::n)
     );
 }
 
 (int, int) secp256k1::_jmul(int x1, int z1, int x2, int z2) inline_ref {
     return (
-        _::mulmod(x1, x2, secp256k1::n),
-        _::mulmod(z1, z2, secp256k1::n)
+        _::secp2561k::mulmod(x1, x2, secp256k1::n),
+        _::secp2561k::mulmod(z1, z2, secp256k1::n)
     );
 }
 
 (int, int) secp256k1::_jdiv(int x1, int z1, int x2, int z2) inline_ref {
     return (
-        _::mulmod(x1, z2, secp256k1::n),
-        _::mulmod(z1, x2, secp256k1::n)
+        _::secp2561k::mulmod(x1, z2, secp256k1::n),
+        _::secp2561k::mulmod(z1, x2, secp256k1::n)
     );
 }
 
@@ -78,7 +78,7 @@ const secp256k1::a = 0;
     while (newR != 0) {
         q = r / newR;
 
-        (t, newT) = (newT, _::addmod(t, (secp256k1::n - _::mulmod(q, newT, secp256k1::n)), secp256k1::n));
+        (t, newT) = (newT, _::secp2561k::addmod(t, (secp256k1::n - _::secp2561k::mulmod(q, newT, secp256k1::n)), secp256k1::n));
         (r, newR) = (newR, r - q * newR );
     }
 
@@ -125,9 +125,9 @@ const secp256k1::a = 0;
     (y3, db) = secp256k1::_jsub(y3, db, y1, z1);
 
     if (da != db) {
-        x3 = _::mulmod(x3, db, secp256k1::n);
-        y3 = _::mulmod(y3, da, secp256k1::n);
-        z3 = _::mulmod(da, db, secp256k1::n);
+        x3 = _::secp2561k::mulmod(x3, db, secp256k1::n);
+        y3 = _::secp2561k::mulmod(y3, da, secp256k1::n);
+        z3 = _::secp2561k::mulmod(da, db, secp256k1::n);
     } else {
         z3 = da;
     }
@@ -168,16 +168,16 @@ const secp256k1::a = 0;
 (int, int) secp256k1::ecadd(int x1, int y1, int x2, int y2) inline {
     (int x3, int y3, int z) = secp256k1::_ecadd(x1, y1, 1, x2, y2, 1);
     z = secp256k1::_inverse(z);
-    x3 = _::mulmod(x3, z, secp256k1::n);
-    y3 = _::mulmod(y3, z, secp256k1::n);
+    x3 = _::secp2561k::mulmod(x3, z, secp256k1::n);
+    y3 = _::secp2561k::mulmod(y3, z, secp256k1::n);
     return (x3, y3);
 }
 
 (int, int) secp256k1::ecmul(int x1, int y1, int scalar) inline {
     (int x2, int y2, int z) = secp256k1::_ecmul(scalar, x1, y1, 1);
     z = secp256k1::_inverse(z);
-    x2 = _::mulmod(x2, z, secp256k1::n);
-    y2 = _::mulmod(y2, z, secp256k1::n);
+    x2 = _::secp2561k::mulmod(x2, z, secp256k1::n);
+    y2 = _::secp2561k::mulmod(y2, z, secp256k1::n);
     return (x2, y2);
 }
 
@@ -202,25 +202,25 @@ const secp256k1::a = 0;
         if(e & bit > 0) { 
             bitval = 1; 
         }
-        o = _::mulmod(_::mulmod(o, o, m), _::pow(b, bitval), m);
+        o = _::secp2561k::mulmod(_::secp2561k::mulmod(o, o, m), _::secp2561k::pow(b, bitval), m);
         bitval = 0;
         
         if(e & (bit / 2) > 0) { 
             bitval = 1; 
         }
-        o = _::mulmod(_::mulmod(o, o, m), _::pow(b, bitval), m);
+        o = _::secp2561k::mulmod(_::secp2561k::mulmod(o, o, m), _::secp2561k::pow(b, bitval), m);
         bitval = 0;
         
         if(e & (bit / 4) > 0) { 
             bitval = 1; 
         }
-        o = _::mulmod(_::mulmod(o, o, m), _::pow(b, bitval), m);
+        o = _::secp2561k::mulmod(_::secp2561k::mulmod(o, o, m), _::secp2561k::pow(b, bitval), m);
         bitval = 0;
         
         if(e & (bit / 8) > 0) { 
             bitval = 1; 
         }
-        o = _::mulmod(_::mulmod(o, o, m), _::pow(b, bitval), m);
+        o = _::secp2561k::mulmod(_::secp2561k::mulmod(o, o, m), _::secp2561k::pow(b, bitval), m);
 
         bit = bit / 16;
     }
@@ -236,9 +236,9 @@ const secp256k1::a = 0;
 
     int i = 0;
     while(i < k) {
-        int beta = _::addmod(_::mulmod(_::mulmod(x, x, secp256k1::n), x, secp256k1::n), 7, secp256k1::n);
+        int beta = _::secp2561k::addmod(_::secp2561k::mulmod(_::secp2561k::mulmod(x, x, secp256k1::n), x, secp256k1::n), 7, secp256k1::n);
         y = secp256k1::expmod(beta, z, secp256k1::n);
-        if (beta == _::mulmod(y, y, secp256k1::n)) {
+        if (beta == _::secp2561k::mulmod(y, y, secp256k1::n)) {
             return (x, y);
         }
         x = (x + 1) % secp256k1::n;

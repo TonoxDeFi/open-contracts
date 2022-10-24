@@ -5,7 +5,7 @@
 -}
 
 ;; private
-(int) _::mod(int x, int y) asm "MOD";
+(int) _::utils::mod(int x, int y) asm "MOD";
 
 (slice) utils::get_contract_address(int workchain, cell state_init) inline {
     return begin_cell()
@@ -34,7 +34,7 @@
 }
 
 (int) utils::get_query_id() inline {
-    return now() + _::mod(cur_lt(), 4294967296);
+    return now() + _::utils::mod(cur_lt(), 4294967296);
 }
 
 (slice) utils::get_serialized_address(int workchain, int address) inline {
