@@ -5,17 +5,17 @@
 ```c
 
 () main(){
-    int n1 = exp(2); ;; or 2.exp()
+    int n1 = math::exp(2); ;; or 2.math::exp()
     n1~dump(); ;; 4
 
-    int n2 = sqrt(36); ;; or 36.exp()
+    int n2 = math::sqrt(36); ;; or 36.math::exp()
     n2~dump(); ;; 6
 }
 ```
 
 ## Functions
-- `(int) sqrt(int x)`
-- `(int) avg(int x, int y)`
-- `(int) exp(int x)`
-- `(int) log2(int x)` 
-- `(int) mod (int x, int y)`
+- `(int) math::sqrt(int x)`
+- `(int) math::avg(int x, int y)`
+- `(int) math::exp(int x)`
+- `(int) math::log2(int x)` 
+- `(int) math::mod(int x, int y)`

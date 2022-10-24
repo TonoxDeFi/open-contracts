@@ -4,7 +4,26 @@
     Extends FunC's arithmetic operations.
 -}
 
-int sqrt(int x) inline {
+(int) math::pow(int n, int e) {
+  if (e == 0) {
+    return 1;
+  }
+
+  if (e == 1) {
+    return n;
+  }
+
+  int p = math::pow(n, (e / 2));
+  p = p * p;
+    
+  if ((e % 2) == 1) {
+    p = p * n;
+  }
+    
+  return p;
+}
+
+int math::sqrt(int x) inline {
   if (x == 0) { return x; }
 
   int r = 181;
@@ -37,49 +56,49 @@ int sqrt(int x) inline {
   return (r < r1 ? r : r1);
 }
 
-(int) avg(int x, int y) inline {
-    return (x + y) / 2;
+(int) math::avg(int x, int y) inline {
+  return (x + y) / 2;
 }
 
-(int) exp(int x) inline {
-    return (x >= 0 ? 1 << x : 1 >> (x * -1));
+(int) math::exp(int x) inline {
+  return (x >= 0 ? 1 << x : 1 >> (x * -1));
 }
 
-(int) log2(int x) inline {
+(int) math::log2(int x) inline {
   int n = 0;
-  if (x >= 128.exp()) { 
+  if (x >= 128.math::exp()) { 
     x >>= 128; 
     n += 128; 
   }
-  if (x >= 64.exp()) { 
+  if (x >= 64.math::exp()) { 
     x >>= 64;
     n += 64; 
   }
-  if (x >= 32.exp()) {
+  if (x >= 32.math::exp()) {
     x >>= 32; 
     n += 32; 
   }
-  if (x >= 16.exp()) { 
+  if (x >= 16.math::exp()) { 
     x >>= 16; 
     n += 16; 
   }
-  if (x >= 8.exp()) { 
+  if (x >= 8.math::exp()) { 
     x >>= 8; 
     n += 8; 
   }
-  if (x >= 4.exp()) { 
+  if (x >= 4.math::exp()) { 
     x >>= 4; 
     n += 4; 
   }
-  if (x >= 2.exp()) { 
+  if (x >= 2.math::exp()) { 
     x >>= 2; 
     n += 2; 
   }
-  if (x >= 1.exp()) { 
+  if (x >= 1.math::exp()) { 
     ;; x >>= 1; 
     n += 1; 
   }
   return n;
 }
 
-(int) mod (int x, int y) asm "MOD";
+(int) math::mod (int x, int y) asm "MOD";
