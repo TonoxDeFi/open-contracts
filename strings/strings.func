@@ -4,7 +4,7 @@
     Provides operations on strings.
 -}
 
-(slice) strings::base64url (slice bytes) method_id {
+(slice) strings::base64url (slice bytes) {
     int size = bytes.slice_bits() / 6;
     builder result = begin_cell();
 
