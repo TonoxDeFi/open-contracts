@@ -1,0 +1,8 @@
+forall X -> tuple tuples::tset(tuple t, int k, X x) asm(t x k) "SETINDEXVAR";
+forall X -> (tuple, ()) ~tset(tuple t, int k, X x) asm(t x k) "SETINDEXVAR";
+forall X -> tuple tuples::tsetq(tuple t, int k, X x) asm(t x k) "SETINDEXVARQ";
+forall X -> (tuple, ()) ~tsetq(tuple t, int k, X x) asm(t x k) "SETINDEXVARQ";
+forall X -> (tuple, X) tuples::tpop(tuple t) asm "TPOP";
+forall X -> (int) tuples::is_tuple(X t) asm "ISTUPLE";
+int tuples::tlen(tuple t) asm "TLEN";
+int tuples::tlenq(tuple t) asm "QTLEN";
