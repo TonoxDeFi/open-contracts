@@ -64,6 +64,6 @@ int math::sqrt(int x) inline {
   return (x >= 0 ? 1 << x : 1 >> (x * -1));
 }
 
-(int) math::log2(int x) inline asm "UBITSIZE DEC";
+(int) math::log2(int x) asm "UBITSIZE DEC";
 
 (int) math::mod (int x, int y) asm "MOD";
