@@ -64,41 +64,6 @@ int math::sqrt(int x) inline {
   return (x >= 0 ? 1 << x : 1 >> (x * -1));
 }
 
-(int) math::log2(int x) inline {
-  int n = 0;
-  if (x >= 128.math::exp()) { 
-    x >>= 128; 
-    n += 128; 
-  }
-  if (x >= 64.math::exp()) { 
-    x >>= 64;
-    n += 64; 
-  }
-  if (x >= 32.math::exp()) {
-    x >>= 32; 
-    n += 32; 
-  }
-  if (x >= 16.math::exp()) { 
-    x >>= 16; 
-    n += 16; 
-  }
-  if (x >= 8.math::exp()) { 
-    x >>= 8; 
-    n += 8; 
-  }
-  if (x >= 4.math::exp()) { 
-    x >>= 4; 
-    n += 4; 
-  }
-  if (x >= 2.math::exp()) { 
-    x >>= 2; 
-    n += 2; 
-  }
-  if (x >= 1.math::exp()) { 
-    ;; x >>= 1; 
-    n += 1; 
-  }
-  return n;
-}
+(int) math::log2(int x) inline asm "UBITSIZE DEC";
 
 (int) math::mod (int x, int y) asm "MOD";
