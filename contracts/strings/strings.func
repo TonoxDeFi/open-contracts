@@ -3,3 +3,49 @@
 
     Provides operations on strings.
 -}
+
+(slice) strings::base64url (slice bytes) {
+    int size = bytes.slice_bits() / 6;
+    builder result = begin_cell();
+
+    repeat (size) {
+        int code = bytes~load_uint(6);
+        if (code < 26) {
+            result~store_uint(65 + code, 8);
+        }
+        if ((code >= 26) & (code < 52)) {
+            result~store_uint(97 + code - 26, 8);
+        }
+        if ((code >= 52) & (code < 62)) {
+            result~store_uint(48 + code - 52, 8);
+        }
+        if (code == 62) {
+            result~store_uint(45, 8);
+        }
+        if (code == 63) {
+            result~store_uint(95, 8);
+        }
+    }
+
+    size = bytes.slice_bits();
+    if (size > 0) {
+        int code = (bytes~load_uint(size)) << (6 - size);
+        if (code < 26) {
+            result~store_uint(65 + code, 8);
+        }
+        if ((code >= 26) & (code < 52)) {
+            result~store_uint(97 + code - 26, 8);
+        }
+        if ((code >= 52) & (code < 62)) {
+            result~store_uint(48 + code - 52, 8);
+        }
+        if (code == 62) {
+            result~store_uint(45, 8);
+        }
+        if (code == 63) {
+            result~store_uint(95, 8);
+        }
+    }
+
+    return result.end_cell().begin_parse();
+}
