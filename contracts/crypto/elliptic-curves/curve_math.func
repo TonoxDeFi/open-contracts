@@ -1,0 +1,205 @@
+{-
+    curve_math.func   
+
+    Provides primites to work with elliptic curves.
+-}
+
+const I = 0;
+const Inf = 1;
+const U255_MAX_PLUS_1 = 57896044618658097711785492504343953926634992332820282019728792003956564819968;
+const U128_MAX = 340282366920938463463374607431768211455;
+
+int _::curve_math::mulmod(int a, int b, int m) inline { (_, int r) = muldivmod(a, b, m); return r; }
+int _::curve_math::addmod(int a, int b, int m) inline {
+	if 0 == b { 
+		return a; 
+	}
+
+	b = m - b;
+	if a >= b {
+		return a - b;
+	}
+	return m - b + a;
+}
+
+(int) invMod(int _x, int _pp) inline_ref {
+	;; throw_unless(10010, _x != 0 && _x != _pp && _pp != 0);
+	int q = 0;
+	int newT = 1;
+	int r = _pp;
+	int t = 0;
+	while _x {
+		t = r / _x;
+		(q, newT) = (newT, _::curve_math::addmod(q, (_pp - _::curve_math::mulmod(t, newT, _pp)), _pp));
+		(r, _x) = (_x, r - t * _x);
+	}
+
+	return q;
+}
+
+(int) expMod(int _base, int _exp, int _pp) inline_ref {
+	;; throw_unless(10011, _pp!=0);
+	if _base == 0 {
+		return 0;
+	}
+	if _exp == 0 {
+		return 1;
+	}
+
+	int r = 1;
+	int bit = U255_MAX_PLUS_1;
+	while bit {		
+		r = _::curve_math::mulmod(_::curve_math::mulmod(r, r, _pp), (_exp & bit       ? _base : 1), _pp);
+		r = _::curve_math::mulmod(_::curve_math::mulmod(r, r, _pp), (_exp & (bit / 2) ? _base : 1), _pp);
+		r = _::curve_math::mulmod(_::curve_math::mulmod(r, r, _pp), (_exp & (bit / 4) ? _base : 1), _pp);
+		r = _::curve_math::mulmod(_::curve_math::mulmod(r, r, _pp), (_exp & (bit / 8) ? _base : 1), _pp);
+		bit >>= 4;
+	}
+
+	return r;
+}
+
+(int, int) toAffine(int _x, int _y, int _z, int _pp) inline_ref {
+	int zInv = invMod(_z, _pp);
+	int zInv2 = _::curve_math::mulmod(zInv, zInv, _pp);
+	int x2 = _::curve_math::mulmod(_x, zInv2, _pp);
+	int y2 = _::curve_math::mulmod(_y, _::curve_math::mulmod(zInv, zInv2, _pp), _pp);
+
+	return (x2, y2);
+}
+
+(int) isOnCurve(int _x, int _y, int _aa, int _bb, int _pp) inline_ref {
+	if ((0 == _x) | (_x >= _pp)) | ((0 == _y) | (_y >= _pp)) {
+		return false;
+	}
+	int lhs = _::curve_math::mulmod(_y, _y, _pp);
+	int rhs = _::curve_math::mulmod(_::curve_math::mulmod(_x, _x, _pp), _x, _pp);
+	if _aa != 0 {
+		rhs = _::curve_math::addmod(rhs, _::curve_math::mulmod(_x, _aa, _pp), _pp);
+	}
+	if _bb != 0 {
+		rhs = _::curve_math::addmod(rhs, _bb, _pp);
+	}
+
+	return lhs == rhs;
+}
+
+(int, int, int) jacAdd(int _x1, int _y1, int _z1, int _x2, int _y2, int _z2, int _pp) inline_ref {
+	if (_x1 == 0) & (_y1 == 0){
+		return (_x2, _y2, _z2);
+	}
+	if (_x2 == 0) & (_y2 == 0) {
+		return (_x1, _y1, _z1);
+	}
+
+	;; https://pdfs.semanticscholar.org/5c64/29952e08025a9649c2b0ba32518e9a7fb5c2.pdf Section 5
+	int zs_tmp_0 = _::curve_math::mulmod(_z1, _z1, _pp);
+	int zs_tmp_1 = _::curve_math::mulmod(_z1, zs_tmp_0, _pp);
+	int zs_tmp_2 = _::curve_math::mulmod(_z2, _z2, _pp);
+	int zs_tmp_3 = _::curve_math::mulmod(_z2, zs_tmp_2, _pp);
+
+	int zs_0 = _::curve_math::mulmod(_x1, zs_tmp_2, _pp);
+	int zs_1 = _::curve_math::mulmod(_y1, zs_tmp_3, _pp);
+	int zs_2 = _::curve_math::mulmod(_x2, zs_tmp_0, _pp);
+	int zs_3 = _::curve_math::mulmod(_y2, zs_tmp_1, _pp);
+
+	int hr_0 = _::curve_math::addmod(zs_2, _pp - zs_0, _pp);
+	int hr_1 = _::curve_math::addmod(zs_3, _pp - zs_1, _pp);
+	int hr_2 = _::curve_math::mulmod(hr_0, hr_0, _pp);
+	int hr_3 = _::curve_math::mulmod(hr_2, hr_0, _pp);
+	int qx = _::curve_math::addmod(_::curve_math::mulmod(hr_1, hr_1, _pp), _pp - hr_3, _pp);
+	qx = _::curve_math::addmod(qx, _pp - _::curve_math::mulmod(2, _::curve_math::mulmod(zs_0, hr_2, _pp), _pp), _pp);
+	int qy = _::curve_math::mulmod(hr_1, _::curve_math::addmod(_::curve_math::mulmod(zs_0, hr_2, _pp), _pp - qx, _pp), _pp);
+	qy = _::curve_math::addmod(qy, _pp - _::curve_math::mulmod(zs_1, hr_3, _pp), _pp);
+	int qz = _::curve_math::mulmod(hr_0, _::curve_math::mulmod(_z1, _z2, _pp), _pp);
+	return(qx, qy, qz);
+}
+
+(int, int, int) jacDouble(int _x, int _y, int _z, int _aa, int _pp) inline_ref {
+	if (_z == 0) {
+		return (_x, _y, _z);
+	}
+	int x = _::curve_math::mulmod(_x, _x, _pp);
+	int y = _::curve_math::mulmod(_y, _y, _pp);
+	int z = _::curve_math::mulmod(_z, _z, _pp);
+
+	int s = _::curve_math::mulmod(4, _::curve_math::mulmod(_x, y, _pp), _pp);
+	int m = _::curve_math::addmod(_::curve_math::mulmod(3, x, _pp), _::curve_math::mulmod(_aa, _::curve_math::mulmod(z, z, _pp), _pp), _pp);
+	x = _::curve_math::addmod(_::curve_math::mulmod(m, m, _pp), _pp - _::curve_math::addmod(s, s, _pp), _pp);
+	y = _::curve_math::addmod(_::curve_math::mulmod(m, _::curve_math::addmod(s, _pp - x, _pp), _pp), _pp - _::curve_math::mulmod(8, _::curve_math::mulmod(y, y, _pp), _pp), _pp);
+	z = _::curve_math::mulmod(2, _::curve_math::mulmod(_y, _z, _pp), _pp);
+
+	return (x, y, z);
+}
+
+(int, int, int) jacMul(int _d, int _x, int _y, int _z, int _aa, int _pp) inline_ref {
+	if _d == 0 {
+		return (_x, _y, _z);
+	}
+
+	int remaining = _d;
+	int qx = 0;
+	int qy = 0;
+	int qz = 1;
+
+	while remaining {
+		if remaining & 1 {
+			(qx, qy, qz) = jacAdd(qx, qy, qz, _x, _y, _z, _pp);
+		}
+		remaining >>= 1;
+		(_x, _y, _z) = jacDouble(_x, _y, _z, _aa, _pp);
+	}
+	return (qx, qy, qz);
+}
+
+(int, int) curve_math::ecInv(int _x, int _y, int _pp) inline_ref {
+	return (_x, (_pp - _y) % _pp);
+}
+
+(int, int) curve_math::ecAdd(int _x1, int _y1, int _x2, int _y2, int _aa, int _pp) inline_ref {
+	int x = 0;
+	int y = 0;
+	int z = 0;
+
+	if _x1 == _x2 {
+		if _::curve_math::addmod(_y1, _y2, _pp) == 0 {
+			return (0, 0);
+		} else {
+			(x, y, z) = jacDouble(_x1, _y1, 1, _aa, _pp);
+		}
+	} else {
+		(x, y, z) = jacAdd(_x1, _y1, 1, _x2, _y2, 1, _pp);
+	}
+	return toAffine(x, y, z, _pp);
+}
+
+(int, int) curve_math::ecSub(int _x1, int _y1, int _x2, int _y2, int _aa, int _pp) inline_ref {
+	(int x, int y) = ecInv(_x2, _y2, _pp);
+	return ecAdd(_x1, _y1, x, y, _aa, _pp);
+}
+
+(int, int) curve_math::ecMul(int _k, int _x, int _y, int _aa, int _pp) inline_ref {
+	(int x1, int y1, int z1) = jacMul(_k, _x, _y, 1, _aa, _pp);
+	return toAffine(x1, y1, z1, _pp);
+}
+
+;; if scalar (privKey) is too large, it wont work
+(int, int) curve_math::derivePubKey(int privKey) inline_ref {
+	return ecMul(privKey, curve_gx, curve_gx, curve_a, curve_n);
+}
+
+{-
+TODO: doesnt work, computation should be done in different transactions
+avg: 5mln gas
+(int) curve_math::verify(int h, int r, int s, int pubx, int puby) {
+  int s_inv = invMod(s, curve_n);
+  int u = _::curve_math::mulmod(h, s_inv, curve_n);
+  int v = _::curve_math::mulmod(r, s_inv, curve_n);
+
+  (int x1, int y1) = ecMul(u, curve_gx, curve_gy, curve_a, curve_n);
+  (int x2, int y2) = ecMul(v, pubx, puby, curve_a, curve_n);
+  (int x3, _) = ecAdd(x1, y1, x2, y2, curve_a, curve_n);
+
+  return x3 == r;
+}
+-}
