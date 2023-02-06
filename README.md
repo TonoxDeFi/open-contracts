@@ -29,6 +29,9 @@ You can check the usage and examples in README.md of the library itself.
 
 ## Contribute
 open-contracts exists thanks to all the people who contribute. PR are welcome!
-
+You can also sponsor the project by donating TON or any Jetton to the following address:
+```
+EQDnLXD_E_U7ZZO6k57Fpyp6flVy4QetQSbUUOtFuORn1nu7
+```
 ## License
 Licensed under the [MIT License](LICENSE).
