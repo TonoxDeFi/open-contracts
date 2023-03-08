@@ -19,6 +19,7 @@ Currently available libraries:
 - [tuples.func](contracts/tuples/README.md)
 - [utils.func](contracts/utils/README.md)
 - [crypto.func](contracts/crypto/README.md)
+- [slices.func](contracts/slices/README.md)
 
 ### Usage
 Import the library into your contract:

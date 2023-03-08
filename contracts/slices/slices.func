@@ -1,0 +1,7 @@
+{-
+    slices.func   
+
+    Provides primites to work with slices.
+-}
+slice slices::preload_bits_offset(slice s, int offset, int len) asm "SDSUBSTR";
+(slice, slice) slices::load_slice(slice s, int len) asm( -> 1 0) "LDSLICEX";
